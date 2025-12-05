@@ -36,6 +36,7 @@ if (Ismerge)
         hold on; % 保持当前图形
         xlabel("频率/GHz");
         ylabel("相位/deg");
+        title("相位分布");
     end
 else
     for i = 1:numel(rawdata)
@@ -46,6 +47,7 @@ else
         plot(rawphase{:,1}, rawphase{:,2}, 'LineWidth', 2);
         xlabel("频率/GHz");
         ylabel("相位/deg");
+        title("相位分布");
     end
 end
 end

@@ -11,7 +11,8 @@ if (Ismerge)
         plot(rawphase{:,1}, rawphase{:,2}, 'LineWidth', 2);
         hold on; % 保持当前图形
         xlabel("频率/GHz");
-        ylabel("相位/deg");
+        ylabel("透射率");
+        title("透射率");
     end
 else
     for i = 1:numel(rawdata)
@@ -21,7 +22,8 @@ else
 
         plot(rawphase{:,1}, rawphase{:,2}, 'LineWidth', 2);
         xlabel("频率/GHz");
-        ylabel("相位/deg");
+        ylabel("透射率");
+        title("透射率");
     end
 end
 end
