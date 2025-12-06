@@ -7,10 +7,9 @@ rows = codingMatrix.size(1);
 cols = codingMatrix.size(2);
 xSize = unitParams.unitSize(1);
 YSize = unitParams.unitSize(2);
-
 zSize = unitParams.unitSize(3);
-
 codeNum = unitParams.codeNum;
+codeLayer = codingMatrix.codeLayer;
 if codeNum~=codingMatrix.codeNum
     error("单元编码数与码本编码数不一致");
 end
@@ -55,10 +54,15 @@ list_centers = reshape(centers, [], 3);
 
 % 2. 拉直编码矩阵
 % 将 [rows, cols] 变为 [rows*cols, 1] 的列向量
-list_codes = codingMatrix.codingMatrix(:);
+for i = 1:codeLayer
+    list_codes{i} = codingMatrix.codingMatrix{i}(:);
+end
 
+SetNormal = [0 0 1];
+SetOrigin = [0 0 0];
+SetUVector = [1 0 0];
 
-CstActivateLocalWCS(mws,0,0,0,false);
+activateWCS(mws,SetNormal,SetOrigin,SetUVector,false);
 
 % 创建问题对话框，显示自定义消息
 button = questdlg('检查基准编码单元命名是否为对应编码（仅数字）且所有单元中心均在全局坐标系原点处且重合。是否继续？', ...
@@ -68,9 +72,14 @@ button = questdlg('检查基准编码单元命名是否为对应编码（仅数�
 % 根据用户选择执行不同操作
 switch button
     case '确定'
-        %平移单元
-        for i=1:rows*cols
-            translationObj(mws,sprintf('%d',list_codes(i)),list_centers(i,1),list_centers(i,2),list_centers(i,3),true,1);
+        disp('开始建模');
+        for j = 1:codeLayer
+            fprintf('当前层数%d\n',j);
+            %平移单元
+            for i=1:rows*cols
+                translationObj(mws,sprintf('%d',list_codes{j}(i)),list_centers(i,1),list_centers(i,2),list_centers(i,3)+SetOrigin(3),true,1);
+            end
+            SetOrigin(3) = codingMatrix.layerDistance(j)+SetOrigin(3)+dz;
         end
 
         % 删除原有基准单元
